@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: url(./bg.png) no-repeat;
+            background-size: cover;
+        }
+
+        .box {
+            position: fixed;
+            width: 1920px;
+            height: 1080px;
+            background: red;
+            transform-origin: left top;
+            left: 50%;
+            top: 50%;
+        }
+
+        .top {
+            width: 100px;
+            height: 100px;
+            background: hotpink;
+            margin-left: 50px;
+        }
+
+        .bottom {
+            width: 100px;
+            height: 100px;
+            background: skyblue;
+            margin-left: 50px;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 数据展示的区域 -->
+        <div class="box">
+            <div class="top">我是祖国的</div>
+            <div class="bottom">老花骨朵</div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    //控制数据大屏放大与缩小
+    let box = document.querySelector('.box');
+    box.style.transform = `scale(${getScale()}) translate(-50%,-50%)`
+    //计算缩放的比例啦
+    function getScale(w = 1920, h = 1080) {
+        const ww = window.innerWidth / w;
+        const wh = window.innerHeight / h;
+        return ww < wh ? ww : wh;
+        //ww<wh情况: 1920/1920(ww)   1080/1080(wh)
+        //ww>wh情况:1920/1920(ww)   1080/1080(wh)
+    }
+
+    window.onresize = () => {
+        box.style.transform = `scale(${getScale()}) translate(-50%,-50%)`
+    }
+
+</script>
