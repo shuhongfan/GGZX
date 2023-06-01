@@ -1,20 +1,21 @@
 <template>
-  <div class="login_container">
+  <div class='login_container'>
     <el-row>
-      <el-col :span="12" :xs="0"></el-col>
-      <el-col :span="12" :xs="24">
+      <el-col :span='12' :xs='0'></el-col>
+      <el-col :span='12' :xs='24'>
         <!-- 登录的表单 -->
-        <el-form class="login_form" :model="loginForm" :rules="rules" ref="loginForms">
+        <el-form ref='loginForms' :model='loginForm' :rules='rules' class='login_form'>
           <h1>Hello</h1>
           <h2>欢迎来到硅谷甄选</h2>
-          <el-form-item prop="username">
-            <el-input :prefix-icon="User" v-model="loginForm.username"></el-input>
+          <el-form-item prop='username'>
+            <el-input v-model='loginForm.username' :prefix-icon='User'></el-input>
           </el-form-item>
-          <el-form-item prop="password">
-            <el-input type="password" :prefix-icon="Lock" v-model="loginForm.password" show-password></el-input>
+          <el-form-item prop='password'>
+            <el-input v-model='loginForm.password' :prefix-icon='Lock' show-password type='password'></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button :loading="loading" class="login_btn" type="primary" size="default" @click="login">登录</el-button>
+            <el-button :loading='loading' class='login_btn' size='default' type='primary' @click='login'>登录
+            </el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -22,58 +23,59 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { User, Lock } from '@element-plus/icons-vue';
-import { reactive, ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { ElNotification } from 'element-plus';
+<script lang='ts' setup>
+import { Lock, User } from '@element-plus/icons-vue'
+import { reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ElNotification } from 'element-plus'
 //引入获取当前时间的函数
-import { getTime } from '@/utils/time';
+import { getTime } from '@/utils/time'
 //引入用户相关的小仓库
-import useUserStore from "@/store/modules/user";
-let useStore = useUserStore();
+import useUserStore from '@/store/modules/user'
+
+let useStore = useUserStore()
 //获取el-form组件
-let loginForms = ref();
+let loginForms = ref()
 //获取路由器
-let $router = useRouter();
+let $router = useRouter()
 //路由对象
-let $route = useRoute();
+let $route = useRoute()
 //定义变量控制按钮加载效果
-let loading = ref(false);
+let loading = ref(false)
 //收集账号与密码的数据
-let loginForm = reactive({ username: 'admin', password: 'atguigu123' });
+let loginForm = reactive({ username: 'admin', password: 'atguigu123' })
 //登录按钮回调
 const login = async () => {
   //保证全部表单相校验通过再发请求
-  await loginForms.value.validate();
+  await loginForms.value.validate()
   //加载效果:开始加载
-  loading.value = true;
+  loading.value = true
   //点击登录按钮以后干什么?
   //通知仓库发登录请求
   //请求成功->首页展示数据的地方
   //请求失败->弹出登录失败信息
   try {
     //保证登录成功
-    await useStore.userLogin(loginForm);
+    await useStore.userLogin(loginForm)
     //编程式导航跳转到展示数据首页
     //判断登录的时候,路由路径当中是否有query参数，如果有就往query参数挑战，没有跳转到首页
-    let redirect: any = $route.query.redirect;
-    $router.push({ path: redirect || '/' });
+    let redirect: any = $route.query.redirect
+    $router.push({ path: redirect || '/' })
     //登录成功提示信息
     ElNotification({
       type: 'success',
       message: '欢迎回来',
-      title: `HI,${getTime()}好`
-    });
+      title: `HI,${getTime()}好`,
+    })
     //登录成功加载效果也消失
-    loading.value = false;
+    loading.value = false
   } catch (error) {
     //登录失败加载效果消息
-    loading.value = false;
+    loading.value = false
     //登录失败的提示信息
     ElNotification({
       type: 'error',
-      message: (error as Error).message
+      message: (error as Error).message,
     })
   }
 }
@@ -84,17 +86,17 @@ const validatorUserName = (rule: any, value: any, callback: any) => {
   //函数:如果符合条件callBack放行通过即为
   //如果不符合条件callBack方法,注入错误提示信息
   if (value.length >= 5) {
-    callback();
+    callback()
   } else {
-    callback(new Error('账号长度至少五位'));
+    callback(new Error('账号长度至少五位'))
   }
 }
 
 const validatorPassword = (rule: any, value: any, callback: any) => {
   if (value.length >= 6) {
-    callback();
+    callback()
   } else {
-    callback(new Error('密码长度至少六位'));
+    callback(new Error('密码长度至少六位'))
   }
 }
 
@@ -108,15 +110,15 @@ const rules = {
   //trigger:触发校验表单的时机 change->文本发生变化触发校验,blur:失去焦点的时候触发校验规则
   username: [
     // { required: true, min: 6, max: 10, message: '账号长度至少六位', trigger: 'change' }
-    { trigger: 'change', validator: validatorUserName }
+    { trigger: 'change', validator: validatorUserName },
   ],
   password: [
     // { required: true, min: 6, max: 15, message: '密码长度至少6位', trigger: 'change' }
-    { trigger: 'change', validator: validatorPassword }
-  ]
+    { trigger: 'change', validator: validatorPassword },
+  ],
 }
 </script>
-<style scoped lang="scss">
+<style lang='scss' scoped>
 .login_container {
   width: 100%;
   height: 100vh;
