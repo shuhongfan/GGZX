@@ -1,0 +1,160 @@
+<template>
+  <div>
+    <!-- 三级分类 -->
+    <Category :scene="scene"></Category>
+    <el-card style="margin: 10px 0px">
+      <!-- v-if|v-show:都可以实现显示与隐藏 -->
+      <div v-show="scene == 0">
+        <el-button
+          :disabled="categoryStore.c3Id ? false : true"
+          icon="Plus"
+          size="default"
+          type="primary"
+          @click="addSpu"
+          >添加SPU
+        </el-button>
+        <!-- 展示已有SPU数据 -->
+        <el-table :data="records" border style="margin: 10px 0px">
+          <el-table-column
+            align="center"
+            label="序号"
+            type="index"
+            width="80px"
+          ></el-table-column>
+          <el-table-column label="SPU名称" prop="spuName"></el-table-column>
+          <el-table-column
+            label="SPU描述"
+            prop="description"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column label="SPU操作">
+            <!-- row:即为已有的SPU对象 -->
+            <template #="{ row, $index }">
+              <el-button
+                icon="Plus"
+                size="small"
+                title="添加SKU"
+                type="primary"
+              ></el-button>
+              <el-button
+                icon="Edit"
+                size="small"
+                title="修改SPU"
+                type="primary"
+                @click="updateSpu(row)"
+              ></el-button>
+              <el-button
+                icon="View"
+                size="small"
+                title="查看SKU列表"
+                type="primary"
+              ></el-button>
+              <el-button
+                icon="Delete"
+                size="small"
+                title="删除SPU"
+                type="primary"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 分页器 -->
+        <el-pagination
+          v-model:current-page="pageNo"
+          v-model:page-size="pageSize"
+          :background="true"
+          :page-sizes="[3, 5, 7, 9]"
+          :total="total"
+          layout="prev, pager, next, jumper,->,sizes,total"
+          @current-change="getHasSpu"
+          @size-change="changeSize"
+        />
+      </div>
+      <!-- 添加SPU|修改SPU子组件 -->
+      <SpuForm
+        v-show="scene == 1"
+        ref="spu"
+        @changeScene="changeScene"
+      ></SpuForm>
+      <!-- 添加SKU的子组件 -->
+      <SkuForm v-show="scene == 2"></SkuForm>
+    </el-card>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import type { HasSpuResponseData, Records } from "@/api/product/spu/type";
+import { ref, watch } from "vue";
+import { reqHasSpu } from "@/api/product/spu";
+//引入分类的仓库
+import useCategoryStore from "@/store/modules/category";
+import type { SpuData } from "@/api/product/spu/type";
+import SpuForm from "./spuForm.vue";
+import SkuForm from "./skuForm.vue";
+
+let categoryStore = useCategoryStore();
+//场景的数据
+let scene = ref<number>(0); //0:显示已有SPU  1:添加或者修改已有SPU 2:添加SKU的结构
+//分页器默认页码
+let pageNo = ref<number>(1);
+//每一页展示几条数据
+let pageSize = ref<number>(3);
+//存储已有的SPU的数据
+let records = ref<Records>([]);
+//存储已有SPU总个数
+let total = ref<number>(0);
+//获取子组件实例SpuForm
+let spu = ref<any>();
+
+//监听三级分类ID变化
+watch(
+  () => categoryStore.c3Id,
+  () => {
+    //当三级分类发生变化的时候清空对应的数据
+    records.value = [];
+    //务必保证有三级分类ID
+    if (!categoryStore.c3Id) return;
+    getHasSpu();
+  }
+);
+
+//此方法执行:可以获取某一个三级分类下全部的已有的SPU
+const getHasSpu = async (pager = 1) => {
+  //修改当前页码
+  pageNo.value = pager;
+  let result: HasSpuResponseData = await reqHasSpu(
+    pageNo.value,
+    pageSize.value,
+    categoryStore.c3Id
+  );
+  if (result.code == 200) {
+    records.value = result.data.records;
+    total.value = result.data.total;
+  }
+};
+//分页器下拉菜单发生变化的时候触发
+const changeSize = () => {
+  getHasSpu();
+};
+
+//添加新的SPU按钮的回调
+const addSpu = () => {
+  //切换为场景1:添加与修改已有SPU结构->SpuForm
+  scene.value = 1;
+};
+//修改已有的SPU的按钮的回调
+const updateSpu = (row: SpuData) => {
+  //切换为场景1:添加与修改已有SPU结构->SpuForm
+  scene.value = 1;
+  //调用子组件实例方法获取完整已有的SPU的数据
+  spu.value.initHasSpuData(row);
+};
+
+//子组件SpuForm绑定自定义事件:目前是让子组件通知父组件切换场景为0
+const changeScene = (num: number) => {
+  //子组件Spuform点击取消变为场景0:展示已有的SPU
+  scene.value = num;
+};
+</script>
+
+<style scoped></style>
