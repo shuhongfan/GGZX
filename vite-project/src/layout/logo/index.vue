@@ -7,12 +7,12 @@
 
 <script lang="ts" setup>
 //引入设置标题与logo这配置文件
-import setting from "@/setting";
+import setting from '@/setting'
 </script>
 <script lang="ts">
 export default {
-  name: "Logo",
-};
+  name: 'Logo',
+}
 </script>
 <style lang="scss" scoped>
 .logo {

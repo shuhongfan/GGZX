@@ -10,9 +10,9 @@
         <el-menu
           :collapse="LayOutSettingStore.fold ? true : false"
           :default-active="$route.path"
-          active-text-color="yellowgreen"
           background-color="#001529"
           text-color="white"
+          active-text-color="yellowgreen"
         >
           <!--根据路由动态生成菜单-->
           <Menu :menuList="userStore.menuRoutes"></Menu>
@@ -21,16 +21,16 @@
     </div>
     <!-- 顶部导航 -->
     <div
-      :class="{ fold: LayOutSettingStore.fold ? true : false }"
       class="layout_tabbar"
+      :class="{ fold: LayOutSettingStore.fold ? true : false }"
     >
       <!-- layout组件的顶部导航tabbar -->
       <Tabbar></Tabbar>
     </div>
     <!-- 内容展示区域 -->
     <div
-      :class="{ fold: LayOutSettingStore.fold ? true : false }"
       class="layout_main"
+      :class="{ fold: LayOutSettingStore.fold ? true : false }"
     >
       <Main></Main>
     </div>
@@ -39,32 +39,32 @@
 
 <script lang="ts" setup>
 //获取路由对象
-import { useRoute } from "vue-router";
+import { useRoute } from 'vue-router'
 //引入左侧菜单logo子组件
-import Logo from "./logo/index.vue";
+import Logo from './logo/index.vue'
 //引入菜单组件
-import Menu from "./menu/index.vue";
+import Menu from './menu/index.vue'
 //右侧内容展示区域
-import Main from "./main/index.vue";
+import Main from './main/index.vue'
 //引入顶部tabbar组件
-import Tabbar from "./tabbar/index.vue";
+import Tabbar from './tabbar/index.vue'
 //获取用户相关的小仓库
-import useUserStore from "@/store/modules/user";
-import useLayOutSettingStore from "@/store/modules/setting";
+import useUserStore from '@/store/modules/user'
+import useLayOutSettingStore from '@/store/modules/setting'
 
-let userStore = useUserStore();
+let userStore = useUserStore()
 //获取layout配置仓库
 
-let LayOutSettingStore = useLayOutSettingStore();
+let LayOutSettingStore = useLayOutSettingStore()
 
 //获取路由对象
-let $route = useRoute();
+let $route = useRoute()
 </script>
 
 <script lang="ts">
 export default {
-  name: "Layout",
-};
+  name: 'Layout',
+}
 </script>
 <style lang="scss" scoped>
 .layout_container {

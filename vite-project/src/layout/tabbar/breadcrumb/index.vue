@@ -8,8 +8,8 @@
     <!-- 面包动态展示路由名字与标题 -->
     <el-breadcrumb-item
       v-for="(item, index) in $route.matched"
-      v-show="item.meta.title"
       :key="index"
+      v-show="item.meta.title"
       :to="item.path"
     >
       <!-- 图标 -->
@@ -23,23 +23,22 @@
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
-import { ref } from "vue";
-import useLayOutSettingStore from "@/store/modules/setting";
+import { useRoute } from 'vue-router'
+import useLayOutSettingStore from '@/store/modules/setting'
 //获取layout配置相关的仓库
-let LayOutSettingStore = useLayOutSettingStore();
+let LayOutSettingStore = useLayOutSettingStore()
 //获取路由对象
-let $route = useRoute();
+let $route = useRoute()
 //点击图标的方法
 const changeIcon = () => {
   //图标进行切换
-  LayOutSettingStore.fold = !LayOutSettingStore.fold;
-};
+  LayOutSettingStore.fold = !LayOutSettingStore.fold
+}
 </script>
 <script lang="ts">
 export default {
-  name: "Breadcrumb",
-};
+  name: 'Breadcrumb',
+}
 </script>
 
 <style scoped></style>
